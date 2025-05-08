@@ -1,0 +1,72 @@
+-- Create database
+CREATE DATABASE IF NOT EXISTS vehicles;
+USE vehicles;
+
+-- Create Make table
+CREATE TABLE IF NOT EXISTS `Make` (
+    `MakeID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `MakeName` VARCHAR(100) NOT NULL,
+    `CreatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `UpdatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`MakeID`),
+    UNIQUE KEY `UK_MakeName` (`MakeName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Create Model table
+CREATE TABLE IF NOT EXISTS `Model` (
+    `ModelID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `ModelName` VARCHAR(100) NOT NULL,
+    `CreatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `UpdatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`ModelID`),
+    UNIQUE KEY `UK_ModelName` (`ModelName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Create BaseVehicle table
+CREATE TABLE IF NOT EXISTS `BaseVehicle` (
+    `BaseVehicleID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `MakeID` INT UNSIGNED NOT NULL,
+    `ModelID` INT UNSIGNED NOT NULL,
+    `CreatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `UpdatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`BaseVehicleID`),
+    KEY `IDX_BaseVehicle_MakeID` (`MakeID`),
+    KEY `IDX_BaseVehicle_ModelID` (`ModelID`),
+    CONSTRAINT `FK_Make_BaseVehicle` FOREIGN KEY (`MakeID`) REFERENCES `Make` (`MakeID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT `FK_Model_BaseVehicle` FOREIGN KEY (`ModelID`) REFERENCES `Model` (`ModelID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Create Vehicle table
+CREATE TABLE IF NOT EXISTS `Vehicle` (
+    `ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `BaseVehicleID` INT UNSIGNED NOT NULL,
+    `Year` INT NOT NULL,
+    `VIN` VARCHAR(17) NOT NULL,
+    `CreatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `UpdatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`ID`),
+    UNIQUE KEY `UK_VIN` (`VIN`),
+    KEY `IDX_Vehicle_BaseVehicleID` (`BaseVehicleID`),
+    CONSTRAINT `FK_BaseVehicle_Vehicle` FOREIGN KEY (`BaseVehicleID`) REFERENCES `BaseVehicle` (`BaseVehicleID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Insert sample data
+INSERT INTO `Make` (`MakeName`) VALUES
+('Toyota'),
+('Honda'),
+('Ford');
+
+INSERT INTO `Model` (`ModelName`) VALUES
+('Camry'),
+('Civic'),
+('Mustang');
+
+INSERT INTO `BaseVehicle` (`MakeID`, `ModelID`) VALUES
+(1, 1), -- Toyota Camry
+(2, 2), -- Honda Civic
+(3, 3); -- Ford Mustang
+
+INSERT INTO `Vehicle` (`BaseVehicleID`, `Year`, `VIN`) VALUES
+(1, 2020, '1HGCM82633A123456'), -- 2020 Toyota Camry
+(2, 2021, '2HGES16575H123456'), -- 2021 Honda Civic
+(3, 2022, '1FAFP45X02W123456'); -- 2022 Ford Mustang 

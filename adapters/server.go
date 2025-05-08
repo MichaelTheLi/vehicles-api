@@ -12,6 +12,6 @@ type ServerState struct {
 
 func BuildServerState(app *domain.App) *api.ServerState {
 	return &api.ServerState{
-		Resolver: resolvers.NewResolver(app.VehicleRepo),
+		VehicleRepo: app.VehicleRepo,
 	}
-} 
+}
