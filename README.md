@@ -14,6 +14,7 @@ A GraphQL API for managing vehicles, built with Go, following Domain-Driven Desi
 - Go 1.21 or later
 - Docker and docker-compose
 - MySQL 8.0
+- `database.sql` (required: provides the initial schema and data for the MySQL database)
 
 ## Setup
 
@@ -65,7 +66,7 @@ You can run the Vehicles API and its MySQL database entirely with Docker. This i
 
 ### Notes
 - The MySQL database is exposed on port 3307 (host) mapped to 3306 (container).
-- The database is initialized with `database.sql` if it does not already exist.
+- The database is initialized with `database.sql` (required) if it does not already exist. Make sure this file is present in the project root.
 - Data is persisted in a Docker volume (`mysql_data`).
 - You can modify environment variables in `docker-compose.yml` as needed.
 
