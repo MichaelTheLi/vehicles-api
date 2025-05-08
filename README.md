@@ -16,6 +16,25 @@ A GraphQL API for managing vehicles, built with Go, following Domain-Driven Desi
 - MySQL 8.0
 - `database.sql` (required: provides the initial schema and data for the MySQL database)
 
+## Environment Setup
+
+The application uses environment variables for configuration. Create a `.env` file in the project root:
+
+```bash
+# Database configuration
+DB_PASSWORD=your_secure_password
+MYSQL_ROOT_PASSWORD=your_secure_root_password
+
+# API configuration
+PORT=8080
+DB_HOST=mysql
+DB_PORT=3306
+DB_USER=root
+DB_NAME=vehicles
+```
+
+Replace `your_secure_password` and `your_secure_root_password` with strong passwords for your environment.
+
 ## Setup
 
 You can use the provided `setup.sh` script to automate the Go environment setup, dependency installation, gqlgen installation, and code generation steps:

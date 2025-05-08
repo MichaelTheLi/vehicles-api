@@ -2,25 +2,24 @@ package adapters
 
 import (
 	"os"
-	"strconv"
 )
 
 type Config struct {
+	Port       string
 	DBHost     string
-	DBPort     int
+	DBPort     string
 	DBUser     string
 	DBPassword string
 	DBName     string
 }
 
-func BuildConfigFromEnv() *Config {
-	port, _ := strconv.Atoi(getEnv("DB_PORT", "3306"))
-	
+func NewConfig() *Config {
 	return &Config{
+		Port:       getEnv("PORT", "8080"),
 		DBHost:     getEnv("DB_HOST", "localhost"),
-		DBPort:     port,
+		DBPort:     getEnv("DB_PORT", "3306"),
 		DBUser:     getEnv("DB_USER", "root"),
-		DBPassword: getEnv("DB_PASSWORD", "password"),
+		DBPassword: getEnv("DB_PASSWORD", ""),
 		DBName:     getEnv("DB_NAME", "vehicles"),
 	}
 }
