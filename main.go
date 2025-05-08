@@ -9,7 +9,7 @@ import (
 
 func main() {
 	apiConfig := api.BuildConfigFromEnv()
-	adaptersConfig := adapters.BuildConfigFromEnv()
+	adaptersConfig := adapters.NewConfig()
 	app := adapters.BuildApp(adaptersConfig)
 
 	serverState := adapters.BuildServerState(app)
