@@ -1,13 +1,30 @@
+scalar Time
+
 type Vehicle {
     id: ID!
     make: String!
     model: String!
     year: Int!
     vin: String!
-    createdAt: String!
-    updatedAt: String!
+    createdAt: Time!
+    updatedAt: Time!
+}
+
+type PageInfo {
+    hasNextPage: Boolean!
+    endCursor: String
+}
+
+type VehicleConnection {
+    edges: [VehicleEdge!]!
+    pageInfo: PageInfo!
+}
+
+type VehicleEdge {
+    node: Vehicle!
+    cursor: String!
 }
 
 type Query {
-    vehicles: [Vehicle!]!
+    vehicles(first: Int, after: String): VehicleConnection!
 } 

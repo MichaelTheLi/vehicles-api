@@ -7,35 +7,60 @@ package resolvers
 import (
 	"context"
 	"fmt"
-	"time"
 	"vehicles_api/api/graph"
 	"vehicles_api/api/graph/model"
 )
 
 // Vehicles is the resolver for the vehicles field.
-func (r *queryResolver) Vehicles(ctx context.Context) ([]*model.Vehicle, error) {
-	vehicles, err := r.Resolver.vehicleRepo.FindAll()
+func (r *queryResolver) Vehicles(ctx context.Context, first *int, after *string) (*model.VehicleConnection, error) {
+	if first == nil {
+		defaultFirst := 10
+		first = &defaultFirst
+	}
+
+	domainConnection, err := r.Resolver.vehicleRepo.FindAll(*first, after)
 	if err != nil {
 		return nil, err
 	}
 
-	// Convert domain vehicles to model vehicles
-	result := make([]*model.Vehicle, len(vehicles))
-	for i, v := range vehicles {
-		result[i] = &model.Vehicle{
-			ID:        fmt.Sprintf("%d", v.ID),
-			Make:      v.Make,
-			Model:     v.Model,
-			Year:      v.Year,
-			Vin:       v.VIN,
-			CreatedAt: v.CreatedAt.Format(time.RFC3339),
-			UpdatedAt: v.UpdatedAt.Format(time.RFC3339),
+	edges := make([]*model.VehicleEdge, len(domainConnection.Edges))
+	for i, edge := range domainConnection.Edges {
+		edges[i] = &model.VehicleEdge{
+			Node: &model.Vehicle{
+				ID:        fmt.Sprintf("%d", edge.Node.ID),
+				Make:      edge.Node.Make,
+				Model:     edge.Node.Model,
+				Year:      edge.Node.Year,
+				Vin:       edge.Node.VIN,
+				CreatedAt: edge.Node.CreatedAt,
+				UpdatedAt: edge.Node.UpdatedAt,
+			},
+			Cursor: edge.Cursor,
 		}
 	}
-	return result, nil
+
+	return &model.VehicleConnection{
+		Edges: edges,
+		PageInfo: &model.PageInfo{
+			HasNextPage: domainConnection.PageInfo.HasNextPage,
+			EndCursor:   &domainConnection.PageInfo.EndCursor,
+		},
+	}, nil
 }
 
 // Query returns graph.QueryResolver implementation.
 func (r *Resolver) Query() graph.QueryResolver { return &queryResolver{r} }
 
 type queryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+/*
+	type VehicleResolver struct {
+	Resolver *Resolver
+}
+*/

@@ -13,6 +13,21 @@ type Vehicle struct {
     UpdatedAt     time.Time `json:"updatedAt" gorm:"column:UpdatedAt"`
 }
 
+type PageInfo struct {
+    HasNextPage bool
+    EndCursor   string
+}
+
+type VehicleConnection struct {
+    Edges    []VehicleEdge
+    PageInfo PageInfo
+}
+
+type VehicleEdge struct {
+    Node   Vehicle
+    Cursor string
+}
+
 type VehicleRepository interface {
-    FindAll() ([]Vehicle, error)
+    FindAll(first int, after *string) (*VehicleConnection, error)
 } 

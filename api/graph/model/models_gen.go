@@ -2,15 +2,34 @@
 
 package model
 
+import (
+	"time"
+)
+
+type PageInfo struct {
+	HasNextPage bool    `json:"hasNextPage"`
+	EndCursor   *string `json:"endCursor,omitempty"`
+}
+
 type Query struct {
 }
 
 type Vehicle struct {
-	ID        string `json:"id"`
-	Make      string `json:"make"`
-	Model     string `json:"model"`
-	Year      int    `json:"year"`
-	Vin       string `json:"vin"`
-	CreatedAt string `json:"createdAt"`
-	UpdatedAt string `json:"updatedAt"`
+	ID        string    `json:"id"`
+	Make      string    `json:"make"`
+	Model     string    `json:"model"`
+	Year      int       `json:"year"`
+	Vin       string    `json:"vin"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+type VehicleConnection struct {
+	Edges    []*VehicleEdge `json:"edges"`
+	PageInfo *PageInfo      `json:"pageInfo"`
+}
+
+type VehicleEdge struct {
+	Node   *Vehicle `json:"node"`
+	Cursor string   `json:"cursor"`
 }
